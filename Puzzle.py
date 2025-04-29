@@ -1,7 +1,9 @@
 # Apply Graph traversal to solve a problem (Portfolio Project Problem):
-# You are given a 2-D puzzle of size MxN, that has N rows and M column (M and N can be
-# different). Each cell in the puzzle is either empty or has a barrier. An empty cell is marked by
-# ‘-’ (hyphen) and the one with a barrier is marked by ‘#’.
+# You are given a 2-D puzzle of size MxN, that has N rows and M column
+# (M and N can be different).
+# Each cell in the puzzle is either empty or has a barrier.
+# An empty cell is marked by ‘-’ (hyphen) and
+# the one with a barrier is marked by ‘#’.
 #
 # You are given two coordinates from the puzzle (a,b) and (x,y).
 # You are currently located at (a,b) and want to reach (x,y).
@@ -12,14 +14,15 @@
 # U: move to upper cell from the current cell
 # D: move to the lower cell from the current cell
 
-# You can move to only an empty cell and cannot move to a cell with a barrier in it. Your goal
-# is to reach the destination cells covering the minimum number of cells as you travel from the
-# starting cell.
+# You can move to only an empty cell and cannot move
+# to a cell with a barrier in it. Your goal is to reach the
+# destination cells covering the minimum number of cells
+# as you travel from the starting cell.
 
 # Input: puzzle, source, destination.
-# Puzzle: A list of lists, each list represents a row in the rectangular puzzle. Each
-# element is either ‘-’ for empty (passable) or ‘#’ for obstacle (impassable). The same
-# as in the example.
+# Puzzle: A list of lists, each list represents a row in the rectangular
+# puzzle. Each element is either ‘-’ for empty (passable) or ‘#’ for
+# obstacle (impassable). The same as in the example.
 # Puzzle = [
 #  ['-', '-', '-', '-', '-'],
 #  ['-', '-', '#', '-', '-'],
@@ -28,15 +31,17 @@
 #  ['-', '#', '-', '-', '-']
 # ]
 
-# source: A tuple representing the indices of the starting position, e.g. for the upper right corner, source=(0, 4).
+# source: A tuple representing the indices of the starting position,
+# e.g. for the upper right corner, source=(0, 4).
 
-# destination: A tuple representing the indices of the goal position, e.g. for the lower right corner, goal=(4, 4).
+# destination: A tuple representing the indices of the goal position,
+# e.g. for the lower right corner, goal=(4, 4).
 
-# Output: A list of tuples representing the indices of each position in the path. The first tuple
-# should be the starting position, or source, and the last tuple should be the destination. If
-# there is no valid path, None should be returned. Not an empty list, but the None object. If
-# source and destination are same return the same cell.
-
+# Output: A list of tuples representing the indices of each position in the
+# path.The first tuple should be the starting position, or source, and the
+# last tuple should be the destination. If there is no valid path, None should
+# be returned. Not an empty list, but the None object. If source and
+# destination are same return the same cell.
 
 # we will use a deque to access first and last cells
 from collections import deque
@@ -45,11 +50,14 @@ from collections import deque
 def solve_puzzle(board, source, destination):
     """
     Solves the puzzle problem outlined above.
-    :param board: A list of lists, each list represents a row in the rectangular puzzle. Each
-    element is either ‘-’ for empty (passable) or ‘#’ for obstacle (impassable).
+    :param board: A list of lists, each list represents a row in the
+    rectangular puzzle. Each element is either ‘-’ for empty (passable) or ‘#’
+    for obstacle (impassable).
     :param source: A tuple representing the indices of the starting position
     :param destination: A tuple representing the indices of the goal position
-    :return:
+    :return: A tuple containing a list of all indices visited and a string
+            with the sequential direction of moves
+            ex: ([(0, 0), (1, 0), (1, 1), (1, 2), (2, 2)], 'DRRD')
     """
     # store the bounds of the puzzle
     rows, columns = len(board), len(board[0])
@@ -58,7 +66,8 @@ def solve_puzzle(board, source, destination):
     # add the starting point to our queue
     queue.append(source)
 
-    # track visited cells, we will consider a cell visited after it has been processed, start at source
+    # track visited cells, we will consider a cell visited after it
+    # has been processed, start at source
     visited = [[False] * columns for i in range(rows)]
     visited[source[0]][source[1]] = True
 
@@ -93,17 +102,17 @@ def solve_puzzle(board, source, destination):
                 # remember that we arrived at the cell from current cell
                 previous_cell[(new_row, new_col)] = cur
 
-    # previous_cell now holds all the reachable cells as keys and the prev cell as value
-    if destination not in previous_cell:  # O(N) check as prev cell might hold all cells from board, N = rows * columns
+    # previous_cell now holds all reachable cells as keys and prev cell as val
+    if destination not in previous_cell:
         return None, None
 
-    # now we must use the previous_cell dictionary to decode the path taken to destination
+    # we use the previous_cell dictionary to decode path taken to destination
     path = [destination]
     path_string = ''
     directions_dict = {(0, -1): 'L', (-1, 0): 'U', (0, 1): 'R', (1, 0): 'D'}
     # backtrack until we reach the starting point
     while path[-1] != source:
-        # find the direction taken from back step to current and add it to string
+        # find the direction taken from back step to current and add to string
         previous_row, previous_col = previous_cell[path[-1]]
         diff_row = path[-1][0] - previous_row
         diff_col = path[-1][1] - previous_col
@@ -118,19 +127,20 @@ def solve_puzzle(board, source, destination):
     res_string = path_string[::-1]
     return (res, res_string)
 
+
 if __name__ == '__main__':
     b1 = [
-        ['-','-','-','-','-'],
-        ['-','-','#','-','-'],
-        ['-','-','-','-','-'],
-        ['#','-','#','#','-'],
-        ['-','#','-','-','-']
+        ['-', '-', '-', '-', '-'],
+        ['-', '-', '#', '-', '-'],
+        ['-', '-', '-', '-', '-'],
+        ['#', '-', '#', '#', '-'],
+        ['-', '#', '-', '-', '-']
     ]
-    s1 = (0,2)
-    d1 = (2,2)
+    s1 = (0, 2)
+    d1 = (2, 2)
     print(solve_puzzle(b1, s1, d1))
-    s2 = (0,0)
-    d2 = (4,4)
+    s2 = (0, 0)
+    d2 = (4, 4)
     print(solve_puzzle(b1, s2, d2))
     b2 = [
         ['-', '#', '-'],
